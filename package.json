@@ -1,9 +1,10 @@
 {
-  "name": "express",
+  "name": "express_demo",
   "version": "1.0.0",
   "description": "express_demo",
   "main": "index.js",
   "scripts": {
+    "start": "DEBUG=* nodemon ./src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -16,5 +17,14 @@
   "bugs": {
     "url": "https://github.com/hehuanlin123/express/issues"
   },
-  "homepage": "https://github.com/hehuanlin123/express#readme"
+  "homepage": "https://github.com/hehuanlin123/express#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mysql2": "^2.1.0",
+    "sequelize": "^5.21.5",
+    "sequelize-cli": "^5.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2"
+  }
 }
