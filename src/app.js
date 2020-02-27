@@ -7,8 +7,10 @@ const app = express();
 //注册路由
 const memberRouter = require('./router/member.router.js');
 const skuRouter = require('./router/sku.router.js');
+const weixinPayRouter = require('./router/weixinPay_router.js')
 app.use('/member',memberRouter);
 app.use('/sku',skuRouter);
+app.use('/weixinPay',weixinPayRouter)
 
 //(2) router级别使用中间件只能单独一个router
 // app.use(memberRouter);
