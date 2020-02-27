@@ -86,6 +86,10 @@ const models = require('../models');
 // model.Sequelize
 // models.sequelize
 
+//日期处理插件
+const moment = require('moment');
+app.use(moment);
+
 //CRUD
 app.get('/create',async (req,res) => {
     let { firstName,lastName,email } = req.query;
@@ -104,8 +108,15 @@ app.get('/create',async (req,res) => {
 
 app.get('/list',async (req,res) => {
     let list = await models.User.findAll();
+    const result = list.map(item => {
+        if(item.createdAt || item.updatedAt){
+            item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss');
+            item.updatedAt = moment(item.updatedAt).format('YYYY-MM-DD HH:mm:ss');
+        }
+        return item;
+    });
     res.json({
-        list
+        result
     });
 });
 
@@ -116,6 +127,8 @@ app.get('/list/:id',async (req,res) => {
             id
         }
     });
+    user.createdAt = user.createdAt ? moment(user.createdAt).format('YYYY-MM-DD HH:mm:ss') : undefined;
+    user.updatedAt = user.updatedAt ? moment(user.updatedAt).format('YYYY-MM-DD HH:mm:ss') : undefined;
     res.json({
         user
     });
