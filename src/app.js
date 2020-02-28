@@ -4,24 +4,32 @@ const express = require('express');
 
 const app = express();
 
+//全局异常
+const error_handler_middleware = require('./middleware/error_handler_middleware.js');
+app.use(error_handler_middleware);
+
 //注册路由
 const memberRouter = require('./router/member.router.js');
 const skuRouter = require('./router/sku.router.js');
-const weixinPayRouter = require('./router/weixinPay_router.js')
+const personInfoRouter = require('./router/personInfo.router.js');
+const weixinPayRouter = require('./router/weixinPay.router.js');
+const todoRouter = require('./router/todo.router.js');
 app.use('/member',memberRouter);
 app.use('/sku',skuRouter);
-app.use('/weixinPay',weixinPayRouter)
+app.use('/personInfo',personInfoRouter);
+app.use('/weixinPay',weixinPayRouter);
+app.use('/todo',todoRouter);
 
 //(2) router级别使用中间件只能单独一个router
 // app.use(memberRouter);
 
 //注册中间件
 // const valid_name_middleware = require(./middleware/valid_name_middleware.js');
-const error_handler_middleware = require('./middleware/error_handler_middleware.js');
+// const error_handler_middleware = require('./middleware/error_handler_middleware.js');
 // 1.使用中间件
 // const not_found_middleware = require('./middleware/not_found_middleware.js');
 // app.all('*',valid_name_middleware);
-app.use(error_handler_middleware);
+// app.use(error_handler_middleware);
 // app.use(not_found_middleware);
 // 2.下一步再请求特定URI
 // app.get('/test',(req,res) => {
@@ -37,7 +45,6 @@ app.use(error_handler_middleware);
 // app.use(express.static('src/static',{
 //
 // }))
-
 
 // app.use((req,res) => {
 //     res.json({
@@ -80,62 +87,6 @@ app.use(error_handler_middleware);
 //         uri:req.path
 //     })
 // });
-
-
-//注册ORM
-const models = require('../models');
-// models.User
-// model.Sequelize
-// models.sequelize
-
-//日期处理插件
-const moment = require('moment');
-app.use(moment);
-
-//CRUD
-app.get('/create',async (req,res) => {
-    let { firstName,lastName,email } = req.query;
-    // promise user --> sequelize对象
-    let user = await models.User.create({
-        firstName,
-        lastName,
-        email
-    });
-    console.log(user);
-    res.json({
-        message:'创建成功',
-        user
-    });
-});
-
-app.get('/list',async (req,res) => {
-    let list = await models.User.findAll();
-    const result = list.map(item => {
-        if(item.createdAt || item.updatedAt){
-            item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm:ss');
-            item.updatedAt = moment(item.updatedAt).format('YYYY-MM-DD HH:mm:ss');
-        }
-        return item;
-    });
-    res.json({
-        result
-    });
-});
-
-app.get('/list/:id',async (req,res) => {
-    let { id } = req.params;
-    let user = await models.User.findOne({
-        where:{
-            id
-        }
-    });
-    user.createdAt = user.createdAt ? moment(user.createdAt).format('YYYY-MM-DD HH:mm:ss') : undefined;
-    user.updatedAt = user.updatedAt ? moment(user.updatedAt).format('YYYY-MM-DD HH:mm:ss') : undefined;
-    res.json({
-        user
-    });
-});
-
 
 app.listen(3000,() => {
     console.log('server启动成功!')
