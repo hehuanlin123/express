@@ -8,6 +8,11 @@ const app = express();
 const error_handler_middleware = require('./middleware/error_handler_middleware.js');
 app.use(error_handler_middleware);
 
+//POST请求解析器,express默认不带body
+const bodyParser = require('body-parser')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+
 //注册路由
 const memberRouter = require('./router/member.router.js');
 const skuRouter = require('./router/sku.router.js');
